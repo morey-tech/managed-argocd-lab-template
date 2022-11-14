@@ -1,0 +1,10 @@
+namespace: argocd
+spec:
+  destination:
+    name: ""
+  source:
+    repoURL: ""
+    targetRevision: ""
+
+applications:
+- guestbook
