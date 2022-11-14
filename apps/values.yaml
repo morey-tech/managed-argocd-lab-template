@@ -8,3 +8,4 @@ spec:
 
 applications:
 - guestbook
+- portal
