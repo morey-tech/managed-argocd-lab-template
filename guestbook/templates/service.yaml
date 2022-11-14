@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "guestbook.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ template "guestbook.name" . }}
+    helm.sh/chart: {{ template "guestbook.chart" . }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app: {{ template "guestbook.name" . }}
+    release: {{ .Release.Name }}
