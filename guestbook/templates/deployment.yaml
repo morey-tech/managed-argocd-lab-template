@@ -3,10 +3,8 @@ kind: Deployment
 metadata:
   name: {{ template "guestbook.fullname" . }}
   labels:
-    app: {{ template "guestbook.name" . }}
-    chart: {{ template "guestbook.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ template "guestbook.name" . }}
+    helm.sh/chart: {{ template "guestbook.chart" . }}
 spec:
   replicas: {{ .Values.replicaCount }}
   revisionHistoryLimit: 3
