@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "portal.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ template "portal.name" . }}
+    helm.sh/chart: {{ template "portal.chart" . }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app: {{ template "portal.name" . }}
+    release: {{ .Release.Name }}
