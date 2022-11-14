@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: <environment-name> # Update to your cluster name.
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    name: in-cluster
+  project: default
+  source:
+    path: apps
+    repoURL: https://github.com/<github-username>/managed-argocd-lab # Update to your repo URL.
+    targetRevision: <feature-branch> # Update to your feature branch.
+    helm:
+      # Use the build enviroment provided by Argo CD to inherit the values used to
+      # template the child Applications.
+      parameters:
+      - name: spec.destination.name
+        value: $ARGOCD_APP_NAME
+      - name: spec.source.repoURL
+        value: $ARGOCD_APP_SOURCE_REPO_URL
+      - name: spec.source.targetRevision
+        value: $ARGOCD_APP_SOURCE_TARGET_REVISION
