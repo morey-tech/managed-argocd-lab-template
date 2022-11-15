@@ -13,7 +13,7 @@ kind version: v0.16.0
     - [Intro](#intro)
     - [Pre-requisetes](#pre-requisetes)
     - [Lab Scenario](#lab-scenario)
-    - [1. Fork this repo.](#1-fork-this-repo)
+    - [1. Create repository from template.](#1-create-repository-from-template)
     - [2. Create a Kubernetes cluster using `kind`.](#2-create-a-kubernetes-cluster-using-kind)
     - [2. Launch an Argo CD instance.](#2-launch-an-argo-cd-instance)
     - [3. Deploy an agent to the cluster.](#3-deploy-an-agent-to-the-cluster)
@@ -47,19 +47,14 @@ To prepare for the lab scenario, you can think of what to name your *organizatio
 
 Anywhere you see text in the format `<...>`, this indicates that you need to replace it with the value relevant to your scenario. Using my scenario for example, in the repo `https://github.com/<github-username>/managed-argocd-lab`, I would replace `<github-username>` with `morey-tech`.
 
-### 1. Fork this repo.
-The lab will use this repo and the files in it as the environment configuration for the Kubernetes cluster (i.e., the "GitOps repo").
+### 1. Create repository from template.
+You will use a template repository containing the application Helm charts for the scenario.
 
-You will start by forking this repo to your Github account. 
-1. Click [this link](https://github.com/morey-tech/managed-argocd-lab/fork).
+Start by creating a repository on your Github account from the template. 
+1. Click [this link](https://github.com/morey-tech/managed-argocd-lab/generate) or click "Use this template" from the repo main page.
 2. Ensure the desired "Owner" is selected (e.g., your personal account and not an org).
-3. Then click "Create fork".
-
-Once you have a fork of the repo, create a new branch to contain the changes made during this lab. This will later be referred to as the "feature branch" (e.g., `<feature-branch>`). For simplicity, name it using the current date.
-1. Navigate to `https://github.com/<github-username>/managed-argocd-lab/branches`
-2. In the top right, click "New branch".
-3. Set the "Branch name" to today's date in `YYYY-MM-DD` format (e.g. `2022-11-08`).
-4. In the bottom right of the panel, click "Create branch".
+3. Enter a "Repository name". 
+4. Then click "Create repository from template".
 
 ### 2. Create a Kubernetes cluster using `kind`.
 If you brought your own Kubernetes cluster to the lab, you can skip this section.
@@ -238,19 +233,8 @@ The tree will expand as the Deployment creates a ReplicaSet that then creates a 
 
 Afterwards, all the top-level resources (i.e., those render from the Application source) in the tree will show a green checkmark. Indicating that they are synced (i.e., present in the cluster).
 
-### 5. Change the target revision for the Application.
-Currently the Application is tracking the `HEAD` of the repo (in this case the `main` branch). To facilitate the testing of changes on your feature branch, you will update the source target revision of the Application.
-
-1.  In the top menu, click "APP DETAILS".
-2.  In the top right, click "EDIT".
-3.  Update the "TARGET REVISION" parameter to the branch created after forking the repo, which should be today's date in the [`YYYY-MM-DD` format](https://en.wikipedia.org/wiki/ISO_8601).
-4.  In the top right, click "SAVE".
-5.  In the top right of the App Details pane, click the X to close it.
-
-Since the feature branch is up to date with the `main` branch, the Application will not make any changes to the resources. Note that the "CURRENT SYNC STATUS" at the top, shows the new branch name. Now, the Application will watch for any changes made to the `guestbook` Helm chart on your feature branch.
-
 ### 6. Enable auto-sync and auto-heal for the guestbook Application.
-You can automate the deployment of changes from your feature branch, by enabling the automated sync policy. This will cause any change to the Application source in the repo, or the Application itself, to be applied without intervention.
+You can automate the deployment of Helm chart changes, by enabling the automated sync policy. This will cause any change to the Application source in the repo, or the Application itself, to be applied without intervention.
 
 1.  In the top menu, click "APP DETAILS".
 2.  Under the "SYNC POLICY" section, click "ENABLE AUTO-SYNC" and on the prompt, click "OK".
@@ -264,18 +248,17 @@ The default sync interval is 3 minutes. Meaning, any changes made in Git may not
 ### 7. Demonstrate Application auto-sync via Git.
 With auto-sync enabled on the `guestbook` Application, you can now make a change in Git to have it applied automatically in your cluster. You will demonstrate this by updating the image tag for the `guestbook` Application.
 
-1. From your repo in Github, ensure you are browsing the feature branch.
+1. From your repo in Github, navigate to the `guestbook/values.yaml`.
 
-   `https://github.com/<github-username>/managed-argocd-lab/tree/<feature-branch>`
+   `https://github.com/<github-username>/managed-argocd-lab`
 
-2. Navigate to the `guestbook/values.yaml`.
-3. In the top right of the file, click the pencil icon to edit.
-4. Update the `image.tag` to the `0.2` list.
-5. In the top right, click "Commit changes...".
-6. Add a commit message. For example `chore: bump tag to 0.2 for guestbook`.
-7. In the bottom left, click "Commit changes".
-8. Switch back to the Argo CD UI and go to the `argocd/guestbook` Application.
-9.  In the top right, click the "REFRESH" button.
+2. In the top right of the file, click the pencil icon to edit.
+3. Update the `image.tag` to the `0.2` list.
+4. In the top right, click "Commit changes...".
+5. Add a commit message. For example `chore: bump tag to 0.2 for guestbook`.
+6. In the bottom left, click "Commit changes".
+7. Switch back to the Argo CD UI and go to the `argocd/guestbook` Application.
+8.  In the top right, click the "REFRESH" button.
    1. This will trigger Argo CD to check for any changes to the Application source and resources. This would happen automatically on a 3 minute (default) interval.
 
 Due to the change in the repo, Argo CD will detect that the Application is out-of-sync. It will template the Helm chart, do a three-way diff, and patch the `guestbook` deployment with the new image tag, triggering a rolling update.
@@ -314,7 +297,7 @@ Earlier in the lab, you created the `guestbook` Application using the UI (i.e., 
       source:
         path: apps
         repoURL: https://github.com/<github-username>/managed-argocd-lab # Update to your repo URL.
-        targetRevision: <feature-branch> # Update to your feature branch.
+        targetRevision: HEAD
         helm:
           # Use the build enviroment provided by Argo CD to inherit the values used to
           # template the child Applications.
@@ -328,10 +311,9 @@ Earlier in the lab, you created the `guestbook` Application using the UI (i.e., 
     ```
 4. Update `<environment-name>` in `metadata.name` to match your environment name (i.e., cluster name).
 5. Update `<github-username>` in `spec.source.repoURL` to match your Github username.
-6. Update `<feature-branch>` in `spec.source.targetRevision` to match your feature branch, ensure this is surrounded with single qoutes to prevent it from being converted to a timestamp.
-7. Click "SAVE".
-8. Then, in the top left, click "CREATE".
-9. Click on the Application card titled `argocd/<environment-name>`.
+6. Click "SAVE".
+7. Then, in the top left, click "CREATE".
+8. Click on the Application card titled `argocd/<environment-name>`.
 
     At this point, the Application will be out-of-sync. The diff will show the addition of the `argocd.argoproj.io/tracking-id` label to the existing `guestbook` Application. This indicates that it's now managed by the "App of Apps".
 
@@ -349,27 +331,26 @@ Earlier in the lab, you created the `guestbook` Application using the UI (i.e., 
           automated: {}
     ```
 
-10. To apply the changes, in the top bar, click "SYNC" then "SYNCHRONIZE".
+9.  To apply the changes, in the top bar, click "SYNC" then "SYNCHRONIZE".
 
 ### 10. Add another Application to the App of Apps.
 Now that the App of Apps has been deployed and is managing the existing `guestbook` Application, you can deploy a second Application from the same repo, simply by adding the path to the values in the Helm chart.
 
-1. Ensure you are browsing the feature branch.
-2. Navigate to the `apps/values.yaml` file.
-3. In the top right of the file, click the pencil icon to edit.
-4. Add `portal` to the `applications` list.
+1. Navigate to the `apps/values.yaml` file.
+2. In the top right of the file, click the pencil icon to edit.
+3. Add `portal` to the `applications` list.
     ```diff
        applications:
        - guestbook
     ++ - portal
     ```
-5. Add a commit message. For example `chore: deploy portal app`.
-6. In the bottom left, click "Commit changes".
-7. Switch back to the Argo CD UI.
-8.  The CURRENT SYNC STATUS will show "OutOfSync" indicating that it is out-of-sync.
+4. Add a commit message. For example `chore: deploy portal app`.
+5. In the bottom left, click "Commit changes".
+6. Switch back to the Argo CD UI.
+7.  The CURRENT SYNC STATUS will show "OutOfSync" indicating that it is out-of-sync.
     1.  If the status still shows synced, click on the downward arrow of the "REFRESH" button and then click "Hard Refresh".
     2.  The Application and new Application resource will show a yellow circle with a white arrow.
-9. To apply the changes, in the top bar, click "SYNC" then "SYNCHRONIZE".
+8. To apply the changes, in the top bar, click "SYNC" then "SYNCHRONIZE".
 
 The App of Apps will create the `portal` Application resource Akuity Platform. Then Argo CD will begin creating the resources for the `portal` Application, the same way it did for the `guestbook`.
 
