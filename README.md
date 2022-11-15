@@ -6,23 +6,23 @@ Ultimately, you will have a Kubernetes cluster, with Applications deployed using
 
 Use these links to learn what is: [Kubernetes](https://youtu.be/4ht22ReBjno?t=164), [GitOps](https://opengitops.dev/), [Argo CD](https://argo-cd.readthedocs.io/en/stable/#what-is-argo-cd), [Akuity](https://akuity.io/).
 
-- [Lab Scenario](#lab-scenario)
-- [Pre-requisetes](#pre-requisetes)
-- [Setting up your environment.](#setting-up-your-environment)
-  - [1. Create repository from template.](#1-create-repository-from-template)
-  - [2. Create a Kubernetes cluster using `kind`.](#2-create-a-kubernetes-cluster-using-kind)
-  - [3. Launch an Argo CD instance.](#3-launch-an-argo-cd-instance)
-  - [4. Deploy an agent to the cluster.](#4-deploy-an-agent-to-the-cluster)
-- [Using Argo CD to Deploy Helm Charts.](#using-argo-cd-to-deploy-helm-charts)
-  - [5. Create an Application in Argo CD.](#5-create-an-application-in-argo-cd)
-  - [1. Syncing changes manually](#1-syncing-changes-manually)
-  - [6. Enable auto-sync and auto-heal for the guestbook Application.](#6-enable-auto-sync-and-auto-heal-for-the-guestbook-application)
-  - [7. Demonstrate Application auto-sync via Git.](#7-demonstrate-application-auto-sync-via-git)
-  - [8. Demonstrate Application auto-heal functionality.](#8-demonstrate-application-auto-heal-functionality)
-- [Managing Argo CD Applications declaritively.](#managing-argo-cd-applications-declaritively)
-  - [9. Create an App of Apps.](#9-create-an-app-of-apps)
+- [1. Lab Scenario](#1-lab-scenario)
+- [2. Pre-requisetes](#2-pre-requisetes)
+- [3. Setting up your environment.](#3-setting-up-your-environment)
+  - [3.1. Create repository from template.](#31-create-repository-from-template)
+  - [3.2. Create a Kubernetes cluster using `kind`.](#32-create-a-kubernetes-cluster-using-kind)
+  - [3.3. Launch an Argo CD instance.](#33-launch-an-argo-cd-instance)
+  - [3.4. Deploy an agent to the cluster.](#34-deploy-an-agent-to-the-cluster)
+- [4. Using Argo CD to Deploy Helm Charts.](#4-using-argo-cd-to-deploy-helm-charts)
+  - [4.1. Create an Application in Argo CD.](#41-create-an-application-in-argo-cd)
+  - [4.2. Syncing changes manually](#42-syncing-changes-manually)
+  - [4.3. Enable auto-sync and auto-heal for the guestbook Application.](#43-enable-auto-sync-and-auto-heal-for-the-guestbook-application)
+  - [4.4. Demonstrate Application auto-sync via Git.](#44-demonstrate-application-auto-sync-via-git)
+  - [4.5. Demonstrate Application auto-heal functionality.](#45-demonstrate-application-auto-heal-functionality)
+- [5. Managing Argo CD Applications declaritively.](#5-managing-argo-cd-applications-declaritively)
+  - [5.1. Create an App of Apps.](#51-create-an-app-of-apps)
 
-## Lab Scenario
+## 1. Lab Scenario
 You are a Kubernetes cluster administrator who works in an organization, where containerized applications are deployed using Helm charts.
 
 The charts are managed in a GitHub repo by developers. They connect directly to the cluster to deploy changes from the `main` branch using `helm`. Which requires privileged access.
@@ -34,7 +34,7 @@ To prepare for the lab scenario, you can think of what to name your *organizatio
 
 Anywhere you see text in the format `<...>`, this indicates that you need to replace it with the value relevant to your scenario. Using my scenario for example, in the repo `https://github.com/<github-username>/managed-argocd-lab`, I would replace `<github-username>` with `morey-tech`.
 
-## Pre-requisetes
+## 2. Pre-requisetes
 The lab requires that you have:
 - a [GitHub](https://github.com/) Account - This will be used to create the repo for the environment configuration and for creating an account on the [Akuity Platform](https://akuity.io/akuity-platform/).
 - the Kubernetes command-line tool, [kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl) - Will be used for interacting with the cluster directly.
@@ -48,8 +48,8 @@ The lab was built and tested using the following tool and component versions:
 - Kubernertes: v1.25.2
 - kind: v0.16.0
 
-## Setting up your environment.
-### 1. Create repository from template.
+## 3. Setting up your environment.
+### 3.1. Create repository from template.
 You will use a template repository containing the application Helm charts for the scenario.
 
 Start by creating a repository on your Github account from the template. 
@@ -77,7 +77,7 @@ Next, there are a couple of files to update in the to reflect your repository.
 ++    name: laptop
 ```
 
-### 2. Create a Kubernetes cluster using `kind`.
+### 3.2. Create a Kubernetes cluster using `kind`.
 If you brought your own Kubernetes cluster to the lab, you can skip this section.
 
 Otherwise, you will be creating one on your local mahcine using `kind`.
@@ -114,7 +114,7 @@ Otherwise, you will be creating one on your local mahcine using `kind`.
 
    This will demonstrate that `kubectl` can connect to the cluster and query the API server. The node should be in the "Ready" status.
 
-### 3. Launch an Argo CD instance.
+### 3.3. Launch an Argo CD instance.
 This is were the "fully-managed" part comes in. The Akuity Platform provides Argo CD as a service. By spinning up an instance on Akuity, you'll have an external Argo CD control plane that can manage clusters in private networks. 
 
 Just like how GitHub is hosting the manifests for your apps, the Akuity Platform will host, not only Argo CD, but all of the Application, ApplicationSet, and AppProject definitions. This removes the need for a Kubernetes cluster to host Argo CD, so that it can manage other clusters.
@@ -154,7 +154,7 @@ Just like how GitHub is hosting the manifests for your apps, the Akuity Platform
 
 You will be presented with the Argo CD Applications dashboard.
 
-### 4. Deploy an agent to the cluster.
+### 3.4. Deploy an agent to the cluster.
 Now that you have an Argo CD instance running and assecible, you need to connect your cluster to it. With the Akuity Platform, you will deploy an agent to the cluster enabling it to connect it to the control plane.
 
 1. Back on the Akuity Platform, in the top left of the dashboard for the Argo CD instance, click "Clusters".
@@ -187,8 +187,8 @@ Now that you have an Argo CD instance running and assecible, you need to connect
    - Re-run the `get pods` command to check for updates on the pod statuses.
 9.  Back on the Clusters dashboard, confirm that the cluster shows a green heart before the name, indicating a healthy status.
 
-## Using Argo CD to Deploy Helm Charts.
-### 5. Create an Application in Argo CD.
+## 4. Using Argo CD to Deploy Helm Charts.
+### 4.1. Create an Application in Argo CD.
 An Application declaritively tells Argo CD what Kubernetes recoures to deploy. In this section, you will create one to deploy the `guestbook` Helm Chart, from your GitOps repo, to your cluster.
 
 1. Navigate back to the Argo CD UI, and click "NEW APP".
@@ -240,7 +240,7 @@ The tree will expand as the Deployment creates a ReplicaSet that then creates a 
 
 Afterwards, all the top-level resources (i.e., those render from the Application source) in the tree will show a green checkmark. Indicating that they are synced (i.e., present in the cluster).
 
-### 1. Syncing changes manually
+### 4.2. Syncing changes manually
 The deployment of the guestbook Helm chart is now managed by an Application. So what happens when a developer has a new image tag to deploy?
 
 Well, instead of running `helm upgrade guestbook ./guestbook`, they can trigger a sync of the Application.
@@ -261,7 +261,7 @@ Well, instead of running `helm upgrade guestbook ./guestbook`, they can trigger 
 
 Due to the change in the repo, Argo CD will detect that the Application is out-of-sync. It will template the Helm chart (i.e., `helm template`) and patch the `guestbook` deployment with the new image tag, triggering a rolling update.
 
-### 6. Enable auto-sync and auto-heal for the guestbook Application.
+### 4.3. Enable auto-sync and auto-heal for the guestbook Application.
 You can automate the deployment of Helm chart changes, by enabling the automated sync policy. This will cause any change to the `guestbook` Helm chart source in the repo, or the Application itself, to be applied without intervention.
 
 1.  In the top menu, click "APP DETAILS".
@@ -273,7 +273,7 @@ If the Application was out-of-sync, this would immediately trigger a sync. In th
 
 The default sync interval is 3 minutes. Meaning, any changes made in Git may not apply for up to 3 minutes.
 
-### 7. Demonstrate Application auto-sync via Git.
+### 4.4. Demonstrate Application auto-sync via Git.
 With auto-sync enabled on the `guestbook` Application, you can now make a change in Git to have it applied automatically in your cluster. You will demonstrate this by updating the number of replicas for the `guestbook` deployment.
 
 1. Navigate to your repo on Github, and open the file `guestbook/values.yaml`.
@@ -292,7 +292,7 @@ With auto-sync enabled on the `guestbook` Application, you can now make a change
 
 You can view the details of the sync operation by, in the top menu, clicking "SYNC STATUS". Here it will display, what "REVISION" it was for, what triggered it (i.e., "INITATED BY: automated sync policy"), and the result of the sync (i.e., what resources changed).
 
-### 8. Demonstrate Application auto-heal functionality.
+### 4.5. Demonstrate Application auto-heal functionality.
 If you remember, you also enabled the auto-heal functinoatly. This is particularly useful when your cluster is prone to configuration drift. Maybe, sometimes, changes are made to the Helm charts and applied to the clusters without being pushed to the repo first.
 
 Auto-heal will ensure that any changes made to the Application resources that divate from the source (i.e., the repo) will be reconciled.
@@ -305,8 +305,8 @@ To demonstrate this:
 
 Almost as quickly as the it's deleted, Argo CD will detect that the deploy resource is missing from the Application. It will breifly display the yellow circle with a white arrow, to indicate the resource is out-of-sync. Then automatically recreate it, bringing the Application back to a healthy status.
 
-## Managing Argo CD Applications declaritively.
-### 9. Create an App of Apps.
+## 5. Managing Argo CD Applications declaritively.
+### 5.1. Create an App of Apps.
 Earlier in the lab, you created the `guestbook` Application using the UI (i.e., imparatively). What if you wanted the Application manifests to be managed declaratively too? This is where [the App of Apps pattern](https://argo-cd.readthedocs.io/en/stable/operator-manual/cluster-bootstrapping/#app-of-apps-pattern) comes in. You will create a new Application that will manage the Application manifests for the apps.
 
 1. Navigate back to Applications dashboard in the Argo CD UI, and click "NEW APP".
