@@ -15,6 +15,7 @@ Use these links to learn what is: [Kubernetes](https://youtu.be/4ht22ReBjno?t=16
   - [4. Deploy an agent to the cluster.](#4-deploy-an-agent-to-the-cluster)
 - [Using Argo CD to Deploy Helm Charts.](#using-argo-cd-to-deploy-helm-charts)
   - [5. Create an Application in Argo CD.](#5-create-an-application-in-argo-cd)
+  - [1. Syncing changes manually](#1-syncing-changes-manually)
   - [6. Enable auto-sync and auto-heal for the guestbook Application.](#6-enable-auto-sync-and-auto-heal-for-the-guestbook-application)
   - [7. Demonstrate Application auto-sync via Git.](#7-demonstrate-application-auto-sync-via-git)
   - [8. Demonstrate Application auto-heal functionality.](#8-demonstrate-application-auto-heal-functionality)
@@ -239,8 +240,29 @@ The tree will expand as the Deployment creates a ReplicaSet that then creates a 
 
 Afterwards, all the top-level resources (i.e., those render from the Application source) in the tree will show a green checkmark. Indicating that they are synced (i.e., present in the cluster).
 
+### 1. Syncing changes manually
+The deployment of the guestbook Helm chart is now managed by an Application. So what happens when a developer has a new image tag to deploy?
+
+Well, instead of running `helm upgrade guestbook ./guestbook`, they can trigger a sync of the Application.
+
+1. Navigate to your repo on Github, and open the file `guestbook/values.yaml`.
+
+   `https://github.com/morey-tech/managed-argocd-lab/blob/2022-11-webinar/guestbook/values.yaml`
+
+2. In the top right of the file, click the pencil icon to edit.
+3. Update the `image.tag` to the `0.2` list.
+4. In the top right, click "Commit changes...".
+5. Add a commit message. For example `chore(guestbook): bump tag to 0.2`.
+6. In the bottom left, click "Commit changes".
+7. Switch back to the Argo CD UI and go to the `argocd/guestbook` Application.
+8.  In the top right, click the "REFRESH" button.
+    
+    This will trigger Argo CD to check for any changes to the Application source and resources. This would happen automatically on a 3 minute (default) interval.
+
+Due to the change in the repo, Argo CD will detect that the Application is out-of-sync. It will template the Helm chart (i.e., `helm template`) and patch the `guestbook` deployment with the new image tag, triggering a rolling update.
+
 ### 6. Enable auto-sync and auto-heal for the guestbook Application.
-You can automate the deployment of Helm chart changes, by enabling the automated sync policy. This will cause any change to the Application source in the repo, or the Application itself, to be applied without intervention.
+You can automate the deployment of Helm chart changes, by enabling the automated sync policy. This will cause any change to the `guestbook` Helm chart source in the repo, or the Application itself, to be applied without intervention.
 
 1.  In the top menu, click "APP DETAILS".
 2.  Under the "SYNC POLICY" section, click "ENABLE AUTO-SYNC" and on the prompt, click "OK".
@@ -252,39 +274,40 @@ If the Application was out-of-sync, this would immediately trigger a sync. In th
 The default sync interval is 3 minutes. Meaning, any changes made in Git may not apply for up to 3 minutes.
 
 ### 7. Demonstrate Application auto-sync via Git.
-With auto-sync enabled on the `guestbook` Application, you can now make a change in Git to have it applied automatically in your cluster. You will demonstrate this by updating the image tag for the `guestbook` Application.
+With auto-sync enabled on the `guestbook` Application, you can now make a change in Git to have it applied automatically in your cluster. You will demonstrate this by updating the number of replicas for the `guestbook` deployment.
 
-1. From your repo in Github, navigate to the `guestbook/values.yaml`.
+1. Navigate to your repo on Github, and open the file `guestbook/values.yaml`.
 
-   `https://github.com/<github-username>/managed-argocd-lab`
+   `https://github.com/morey-tech/managed-argocd-lab/blob/2022-11-webinar/guestbook/values.yaml`
 
 2. In the top right of the file, click the pencil icon to edit.
-3. Update the `image.tag` to the `0.2` list.
+3. Update the `replicaCount` to the `2` list.
 4. In the top right, click "Commit changes...".
-5. Add a commit message. For example `chore: bump tag to 0.2 for guestbook`.
+5. Add a commit message. For example `chore(guestbook): scale to 2 replicas`.
 6. In the bottom left, click "Commit changes".
 7. Switch back to the Argo CD UI and go to the `argocd/guestbook` Application.
 8.  In the top right, click the "REFRESH" button.
-   1. This will trigger Argo CD to check for any changes to the Application source and resources. This would happen automatically on a 3 minute (default) interval.
-
-Due to the change in the repo, Argo CD will detect that the Application is out-of-sync. It will template the Helm chart, do a three-way diff, and patch the `guestbook` deployment with the new image tag, triggering a rolling update.
+    
+    This will trigger Argo CD to check for any changes to the Application source and resources. This would happen automatically on a 3 minute (default) interval.
 
 You can view the details of the sync operation by, in the top menu, clicking "SYNC STATUS". Here it will display, what "REVISION" it was for, what triggered it (i.e., "INITATED BY: automated sync policy"), and the result of the sync (i.e., what resources changed).
 
 ### 8. Demonstrate Application auto-heal functionality.
-The auto-heal functionality will ensure that, any changes made in the cluster to the Application's resources, that deviate from the desired state in the GitOps repo, will be reconciled.
+If you remember, you also enabled the auto-heal functinoatly. This is particularly useful when your cluster is prone to configuration drift. Maybe, sometimes, changes are made to the Helm charts and applied to the clusters without being pushed to the repo first.
+
+Auto-heal will ensure that any changes made to the Application resources that divate from the source (i.e., the repo) will be reconciled.
 
 To demonstrate this:
 1. From the `guestbook` Application page in the Argo CD UI:
 2. Locate the `guestbook` deploy (i.e., Deployment) resource and, on the right side of the card, click the three vertical dots.
 3. Then click "Delete".
-4. Enter the Application name `guestbook` and click "OK".
+4. Enter the deployment name `guestbook` and click "OK".
 
 Almost as quickly as the it's deleted, Argo CD will detect that the deploy resource is missing from the Application. It will breifly display the yellow circle with a white arrow, to indicate the resource is out-of-sync. Then automatically recreate it, bringing the Application back to a healthy status.
 
 ## Managing Argo CD Applications declaritively.
 ### 9. Create an App of Apps.
-Earlier in the lab, you created the `guestbook` Application using the UI (i.e., imparatively). What if you wanted the Application manifests to be managed declaratively too? This is where [the App of Apps pattern](https://argo-cd.readthedocs.io/en/stable/operator-manual/cluster-bootstrapping/#app-of-apps-pattern) (or ApplicationSets) comes in. You will create a new Application that will manage the Application manifests for the apps.
+Earlier in the lab, you created the `guestbook` Application using the UI (i.e., imparatively). What if you wanted the Application manifests to be managed declaratively too? This is where [the App of Apps pattern](https://argo-cd.readthedocs.io/en/stable/operator-manual/cluster-bootstrapping/#app-of-apps-pattern) comes in. You will create a new Application that will manage the Application manifests for the apps.
 
 1. Navigate back to Applications dashboard in the Argo CD UI, and click "NEW APP".
 2. In the top right, click "EDIT AS YAML".
