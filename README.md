@@ -4,31 +4,37 @@ In this hour-long hands-on lab, we will set up a repo to contain the environment
 
 Ultimately, you will have a Kubernetes cluster, with Applications deployed using an Argo CD control plane.
 
-Argo CD version: v2.5.1
-Kubernertes version: v1.25.2
-kind version: v0.16.0
-
-- [Creating a fully-managed Kubernetes GitOps platform with Argo CD](#creating-a-fully-managed-kubernetes-gitops-platform-with-argo-cd)
-  - [Lab](#lab)
-    - [Intro](#intro)
-    - [Pre-requisetes](#pre-requisetes)
-    - [Lab Scenario](#lab-scenario)
-    - [1. Create repository from template.](#1-create-repository-from-template)
-    - [2. Create a Kubernetes cluster using `kind`.](#2-create-a-kubernetes-cluster-using-kind)
-    - [2. Launch an Argo CD instance.](#2-launch-an-argo-cd-instance)
-    - [3. Deploy an agent to the cluster.](#3-deploy-an-agent-to-the-cluster)
-    - [4. Create an Application in Argo CD.](#4-create-an-application-in-argo-cd)
-    - [6. Enable auto-sync and auto-heal for the guestbook Application.](#6-enable-auto-sync-and-auto-heal-for-the-guestbook-application)
-    - [7. Demonstrate Application auto-sync via Git.](#7-demonstrate-application-auto-sync-via-git)
-    - [8. Demonstrate Application auto-heal functionality.](#8-demonstrate-application-auto-heal-functionality)
-    - [9. Create an App of Apps.](#9-create-an-app-of-apps)
-    - [10. Add another Application to the App of Apps.](#10-add-another-application-to-the-app-of-apps)
-
-## Lab
-### Intro
 Use these links to learn what is: [Kubernetes](https://youtu.be/4ht22ReBjno?t=164), [GitOps](https://opengitops.dev/), [Argo CD](https://argo-cd.readthedocs.io/en/stable/#what-is-argo-cd), [Akuity](https://akuity.io/).
 
-### Pre-requisetes
+- [Lab Scenario](#lab-scenario)
+- [Pre-requisetes](#pre-requisetes)
+- [Setting up your environment.](#setting-up-your-environment)
+  - [1. Create repository from template.](#1-create-repository-from-template)
+  - [2. Create a Kubernetes cluster using `kind`.](#2-create-a-kubernetes-cluster-using-kind)
+  - [3. Launch an Argo CD instance.](#3-launch-an-argo-cd-instance)
+  - [4. Deploy an agent to the cluster.](#4-deploy-an-agent-to-the-cluster)
+- [Using Argo CD to Deploy Helm Charts.](#using-argo-cd-to-deploy-helm-charts)
+  - [5. Create an Application in Argo CD.](#5-create-an-application-in-argo-cd)
+  - [6. Enable auto-sync and auto-heal for the guestbook Application.](#6-enable-auto-sync-and-auto-heal-for-the-guestbook-application)
+  - [7. Demonstrate Application auto-sync via Git.](#7-demonstrate-application-auto-sync-via-git)
+  - [8. Demonstrate Application auto-heal functionality.](#8-demonstrate-application-auto-heal-functionality)
+- [Managing Argo CD Applications declaritively.](#managing-argo-cd-applications-declaritively)
+  - [9. Create an App of Apps.](#9-create-an-app-of-apps)
+  - [10. Add another Application to the App of Apps.](#10-add-another-application-to-the-app-of-apps)
+
+## Lab Scenario
+You are a Kubernetes cluster administrator who works in an organization, where containerized applications are deployed using Helm charts.
+
+The charts are managed in a GitHub repo by developers. They connect directly to the cluster to deploy changes from the `main` branch using `helm`. Which requires privileged access.
+
+To prepare for the lab scenario, you can think of what to name your *organization* and *environment*. For example, your *organization* could be your Github username and your *environment* “laptop”.
+
+- The *organization* name will be used for creating an organization, while setting up your account on the Akuity Platform.
+- The *environment* name will be used for the cluster and the App of Apps Application in Argo CD.
+
+Anywhere you see text in the format `<...>`, this indicates that you need to replace it with the value relevant to your scenario. Using my scenario for example, in the repo `https://github.com/<github-username>/managed-argocd-lab`, I would replace `<github-username>` with `morey-tech`.
+
+## Pre-requisetes
 The lab requires that you have:
 - a [GitHub](https://github.com/) Account - This will be used to create the repo for the environment configuration and for creating an account on the [Akuity Platform](https://akuity.io/akuity-platform/).
 - the Kubernetes command-line tool, [kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl) - Will be used for interacting with the cluster directly.
@@ -36,15 +42,13 @@ The lab requires that you have:
 - [Docker Desktop](https://duckduckgo.com/?q=docker+desktop+install) and [kind](https://kind.sigs.k8s.io/docs/user/quick-start/#installation) installed on your local machine.
 - [egress traffic](https://www.webopedia.com/definitions/egress-traffic/) allowed from the Kubernetes cluster to the internet.
 
-### Lab Scenario
-In this scenario, you will create an Argo CD instance for your organization, deploy an Application to a cluster, and then make changes to that Application on feature branch.
+The lab was built and tested using the following tool and component versions:
+- Argo CD: v2.5.1
+- Docker Desktop: 4.13.1
+- Kubernertes: v1.25.2
+- kind: v0.16.0
 
-To prepare for the lab scenario, you can think of what to name your *organization* and *environment*. For example, your *organization* could be your Github username and your *environment* “laptop”.
-- The *organization* name will be used for creating an organization, while setting up your account on the Akuity Platform.
-- The *environment* name will be used for the cluster and the App of Apps Application in Argo CD.
-
-Anywhere you see text in the format `<...>`, this indicates that you need to replace it with the value relevant to your scenario. Using my scenario for example, in the repo `https://github.com/<github-username>/managed-argocd-lab`, I would replace `<github-username>` with `morey-tech`.
-
+## Setting up your environment.
 ### 1. Create repository from template.
 You will use a template repository containing the application Helm charts for the scenario.
 
@@ -91,8 +95,8 @@ Otherwise, you will be creating one on your local mahcine using `kind`.
 
    This will demonstrate that `kubectl` can connect to the cluster and query the API server. The node should be in the "Ready" status.
 
-### 2. Launch an Argo CD instance.
-This is were the "fully-managed" part comes in. The Akuity Platform provides Argo CD as a service. By spinning up an instace on Akuity, you'll have an external Argo CD control plane that can manage clusters in private networks. 
+### 3. Launch an Argo CD instance.
+This is were the "fully-managed" part comes in. The Akuity Platform provides Argo CD as a service. By spinning up an instance on Akuity, you'll have an external Argo CD control plane that can manage clusters in private networks. 
 
 Just like how GitHub is hosting the manifests for your apps, the Akuity Platform will host, not only Argo CD, but all of the Application, ApplicationSet, and AppProject definitions. This removes the need for a Kubernetes cluster to host Argo CD, so that it can manage other clusters.
 
@@ -131,7 +135,7 @@ Just like how GitHub is hosting the manifests for your apps, the Akuity Platform
 
 You will be presented with the Argo CD Applications dashboard.
 
-### 3. Deploy an agent to the cluster.
+### 4. Deploy an agent to the cluster.
 Now that you have an Argo CD instance running and assecible, you need to connect your cluster to it. With the Akuity Platform, you will deploy an agent to the cluster enabling it to connect it to the control plane.
 
 1. Back on the Akuity Platform, in the top left of the dashboard for the Argo CD instance, click "Clusters".
@@ -164,7 +168,8 @@ Now that you have an Argo CD instance running and assecible, you need to connect
    - Re-run the `get pods` command to check for updates on the pod statuses.
 9.  Back on the Clusters dashboard, confirm that the cluster shows a green heart before the name, indicating a healthy status.
 
-### 4. Create an Application in Argo CD.
+## Using Argo CD to Deploy Helm Charts.
+### 5. Create an Application in Argo CD.
 An Application declaritively tells Argo CD what Kubernetes recoures to deploy. In this section, you will create one to deploy the `guestbook` Helm Chart, from your GitOps repo, to your cluster.
 
 1. Navigate back to the Argo CD UI, and click "NEW APP".
@@ -255,6 +260,7 @@ To demonstrate this:
 
 Almost as quickly as the it's deleted, Argo CD will detect that the deploy resource is missing from the Application. It will breifly display the yellow circle with a white arrow, to indicate the resource is out-of-sync. Then automatically recreate it, bringing the Application back to a healthy status.
 
+## Managing Argo CD Applications declaritively.
 ### 9. Create an App of Apps.
 Earlier in the lab, you created the `guestbook` Application using the UI (i.e., imparatively). What if you wanted the Application manifests to be managed declaratively too? This is where [the App of Apps pattern](https://argo-cd.readthedocs.io/en/stable/operator-manual/cluster-bootstrapping/#app-of-apps-pattern) (or ApplicationSets) comes in. You will create a new Application that will manage the Application manifests for the apps.
 
