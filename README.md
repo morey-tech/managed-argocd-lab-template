@@ -18,13 +18,11 @@ kind version: v0.16.0
     - [2. Launch an Argo CD instance.](#2-launch-an-argo-cd-instance)
     - [3. Deploy an agent to the cluster.](#3-deploy-an-agent-to-the-cluster)
     - [4. Create an Application in Argo CD.](#4-create-an-application-in-argo-cd)
-    - [5. Change the target revision for the Application.](#5-change-the-target-revision-for-the-application)
     - [6. Enable auto-sync and auto-heal for the guestbook Application.](#6-enable-auto-sync-and-auto-heal-for-the-guestbook-application)
     - [7. Demonstrate Application auto-sync via Git.](#7-demonstrate-application-auto-sync-via-git)
     - [8. Demonstrate Application auto-heal functionality.](#8-demonstrate-application-auto-heal-functionality)
     - [9. Create an App of Apps.](#9-create-an-app-of-apps)
     - [10. Add another Application to the App of Apps.](#10-add-another-application-to-the-app-of-apps)
-    - [[bonus] Delete the cluster, recreate it, and deploy the agent to bootstrap it.](#bonus-delete-the-cluster-recreate-it-and-deploy-the-agent-to-bootstrap-it)
 
 ## Lab
 ### Intro
@@ -353,17 +351,6 @@ Now that the App of Apps has been deployed and is managing the existing `guestbo
 8. To apply the changes, in the top bar, click "SYNC" then "SYNCHRONIZE".
 
 The App of Apps will create the `portal` Application resource Akuity Platform. Then Argo CD will begin creating the resources for the `portal` Application, the same way it did for the `guestbook`.
-
-### [bonus] Delete the cluster, recreate it, and deploy the agent to bootstrap it.
-1. Delete the kind cluster
-   1. notice the unknown state in the Clusters dashboard on the Akuity Platform.
-   2. Sync the Applications to prompt Argo CD to mark their state as unknown.
-2. Create the kind cluster
-3. Deploy the agent
-4. 
- 
-- This could also demonstrate how the set up could easily be replicated in a hosted K8s environment with no additional configuration for the Applications or the firewall of the hosted environment.
-- The control plane allows for the cluster to be bootstrapped by simply deploying the Akuity agent.
 
 To reset for the lab:
 - Delete the Argo CD instance
