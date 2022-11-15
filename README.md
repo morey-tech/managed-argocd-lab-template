@@ -59,29 +59,9 @@ If you brought your own Kubernetes cluster to the lab, you can skip this section
 
 Otherwise, you will be creating one on your local mahcine using `kind`.
 
-1. Run `docker run hello-world` to check that Docker is running and that you have access. You should the following:
+1. Create a cluster using `kind` and specify your *environment* name.
    ```
-   Hello from Docker!
-   This message shows that your installation appears to be working correctly.
-   ```
-2. Run `kubectl version` to check that `kubectl` is installed.
-   ```
-   Client Version: version.Info{Major:"1", Minor:"25", GitVersion:"v1.25.2", GitCommit:"5835544ca568b757a8ecae5c153f317e5736700e", GitTreeState:"clean", BuildDate:"2022-09-21T14:33:49Z", GoVersion:"go1.19.1", Compiler:"gc", Platform:"darwin/arm64"}
-   Kustomize Version: vXX.XX.XX
-   ```
-   - You may also see a message indicating that it couldn't connect to the server to retrive it's version. This happens if your kubectl context is unset, defaulting to connecting to a cluster on localhost which will fail if a cluster is not present, or if your context is set to a cluster that is not available.
-
-    This is okay for now since, we will be creating the cluster later in this section.
-      ```
-      The connection to the server localhost:8080 was refused - did you specify the right host or port?
-      ```
-3. Run `kind version` to check that `kind` is installed.
-   ```
-   kind v0.16.0 go1.19.1 darwin/arm64
-   ```
-4. Run the following command to create the cluster.
-   ```
-   kind create cluster--name <environment-name>
+   kind create cluster --name <environment-name>
    ```
 
    You should see the follow output:
@@ -101,7 +81,8 @@ Otherwise, you will be creating one on your local mahcine using `kind`.
 
    Thanks for using kind! 😊
    ```
-5. Check that the cluster is working by running `kubectl get nodes`.
+
+2. Check that the cluster is working by running `kubectl get nodes`.
    ```
    % kubectl get nodes
    NAME                               STATUS   ROLES           AGE   VERSION
