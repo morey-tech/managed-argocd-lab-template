@@ -20,7 +20,6 @@ Use these links to learn what is: [Kubernetes](https://youtu.be/4ht22ReBjno?t=16
   - [8. Demonstrate Application auto-heal functionality.](#8-demonstrate-application-auto-heal-functionality)
 - [Managing Argo CD Applications declaritively.](#managing-argo-cd-applications-declaritively)
   - [9. Create an App of Apps.](#9-create-an-app-of-apps)
-  - [10. Add another Application to the App of Apps.](#10-add-another-application-to-the-app-of-apps)
 
 ## Lab Scenario
 You are a Kubernetes cluster administrator who works in an organization, where containerized applications are deployed using Helm charts.
@@ -55,8 +54,27 @@ You will use a template repository containing the application Helm charts for th
 Start by creating a repository on your Github account from the template. 
 1. Click [this link](https://github.com/morey-tech/managed-argocd-lab/generate) or click "Use this template" from the repo main page.
 2. Ensure the desired "Owner" is selected (e.g., your personal account and not an org).
-3. Enter a "Repository name". 
+3. Enter a `managed-argocd-lab` for the "Repository name". 
 4. Then click "Create repository from template".
+
+Next, there are a couple of files to update in the to reflect your repository.
+1. For the `guestbook.yaml` and `portal.yaml` files in `apps/`:
+2. Fix the `spec.source.repoURL` by replacing `<github-username>` with your GitHub username (or the org name if using one).
+3. Fix the `spec.destination.name` by replacing `<environment-name>` with your environment name.
+4. Commit the changes to the `main` branch.
+
+```diff
+  spec:
+    project: default
+    source:
+--    repoURL: 'https://github.com/<github-username>/managed-argocd-lab'
+++    repoURL: 'https://github.com/morey-tech/managed-argocd-lab'
+      ...
+    destination:
+      namespace: guestbook
+--    name: <environment-name> # Update this value.
+++    name: laptop
+```
 
 ### 2. Create a Kubernetes cluster using `kind`.
 If you brought your own Kubernetes cluster to the lab, you can skip this section.
@@ -174,7 +192,7 @@ An Application declaritively tells Argo CD what Kubernetes recoures to deploy. I
 
 1. Navigate back to the Argo CD UI, and click "NEW APP".
 2. In the top right, click "EDIT AS YAML".
-3. Paste the contents of `guestbook.yaml` (in the root of the repo).
+3. Paste the contents of `apps/guestbook.yaml` from your repo.
     ```yaml
     apiVersion: argoproj.io/v1alpha1
     kind: Application
@@ -194,8 +212,12 @@ An Application declaritively tells Argo CD what Kubernetes recoures to deploy. I
         syncOptions:
           - CreateNamespace=true
     ```
-    
-    This manifest describes an Application. The name of the Application is `guestbook`. The source is the GitOps repo with the Helm chart. The destination is the cluster conntected to the Argo CD control plane. The sync policy will automatically create the namespace.
+
+    This manifest describes an Application. 
+    - The name of the Application is `guestbook`.
+    - The source is your repo with the Helm charts.
+    - The destination is the cluster you deployed the agent to.
+    - The sync policy will automatically create the namespace.
 
 4. Replace `<github-username>` in `spec.source.repoURL` to match your Github username.
 5. Update `<environment-name>` in `spec.destination.name` to match your environment name (i.e., cluster name).
@@ -273,8 +295,6 @@ Earlier in the lab, you created the `guestbook` Application using the UI (i.e., 
     metadata:
       name: <environment-name> # Update to your cluster name.
       namespace: argocd
-      finalizers:
-      - resources-finalizer.argocd.argoproj.io
     spec:
       destination:
         name: in-cluster
@@ -283,17 +303,10 @@ Earlier in the lab, you created the `guestbook` Application using the UI (i.e., 
         path: apps
         repoURL: https://github.com/<github-username>/managed-argocd-lab # Update to your repo URL.
         targetRevision: HEAD
-        helm:
-          # Use the build enviroment provided by Argo CD to inherit the values used to
-          # template the child Applications.
-          parameters:
-          - name: spec.destination.name
-            value: $ARGOCD_APP_NAME
-          - name: spec.source.repoURL
-            value: $ARGOCD_APP_SOURCE_REPO_URL
-          - name: spec.source.targetRevision
-            value: $ARGOCD_APP_SOURCE_TARGET_REVISION
     ```
+
+    This Application will watch the `apps/` directory in your repo which contains Application manifests for the `guestbook` and `portal` Helm charts.
+
 4. Update `<environment-name>` in `metadata.name` to match your environment name (i.e., cluster name).
 5. Update `<github-username>` in `spec.source.repoURL` to match your Github username.
 6. Click "SAVE".
@@ -316,31 +329,6 @@ Earlier in the lab, you created the `guestbook` Application using the UI (i.e., 
           automated: {}
     ```
 
+    Along with a new Application for the `portal` Helm chart.
+
 9.  To apply the changes, in the top bar, click "SYNC" then "SYNCHRONIZE".
-
-### 10. Add another Application to the App of Apps.
-Now that the App of Apps has been deployed and is managing the existing `guestbook` Application, you can deploy a second Application from the same repo, simply by adding the path to the values in the Helm chart.
-
-1. Navigate to the `apps/values.yaml` file.
-2. In the top right of the file, click the pencil icon to edit.
-3. Add `portal` to the `applications` list.
-    ```diff
-       applications:
-       - guestbook
-    ++ - portal
-    ```
-4. Add a commit message. For example `chore: deploy portal app`.
-5. In the bottom left, click "Commit changes".
-6. Switch back to the Argo CD UI.
-7.  The CURRENT SYNC STATUS will show "OutOfSync" indicating that it is out-of-sync.
-    1.  If the status still shows synced, click on the downward arrow of the "REFRESH" button and then click "Hard Refresh".
-    2.  The Application and new Application resource will show a yellow circle with a white arrow.
-8. To apply the changes, in the top bar, click "SYNC" then "SYNCHRONIZE".
-
-The App of Apps will create the `portal` Application resource Akuity Platform. Then Argo CD will begin creating the resources for the `portal` Application, the same way it did for the `guestbook`.
-
-To reset for the lab:
-- Delete the Argo CD instance
-- Delete the org
-- Revoke Github OAuth access https://github.com/settings/applications
-- Delete the kind cluster `kind delete cluster --name <environment-name>`
