@@ -1,6 +1,6 @@
 # Creating a fully-managed Kubernetes GitOps platform with Argo CD
 
-In this hour-long hands-on lab, we will set up a repo to contain the environment configuration, create a Kubernetes cluster, and provision an Argo CD instance. Then use Argo CD to deploy Applications from the repo to the cluster. Finally, we will demonstrate the auto-sync and auto-heal functionality of the Applications.
+In this hour-long hands-on lab, we will set up a repo to contain the environment configuration, create a Kubernetes cluster, and provision an Argo CD instance. Then use Argo CD to deploy Applications from the repo to the cluster. Finally, we will demonstrate the auto-sync and self-heal functionality of the Applications.
 
 Ultimately, you will have a Kubernetes cluster, with Applications deployed using an Argo CD control plane.
 
@@ -16,9 +16,9 @@ Use these links to learn what is: [Kubernetes](https://youtu.be/4ht22ReBjno?t=16
 - [4. Using Argo CD to Deploy Helm Charts.](#4-using-argo-cd-to-deploy-helm-charts)
   - [4.1. Create an Application in Argo CD.](#41-create-an-application-in-argo-cd)
   - [4.2. Syncing changes manually](#42-syncing-changes-manually)
-  - [4.3. Enable auto-sync and auto-heal for the guestbook Application.](#43-enable-auto-sync-and-auto-heal-for-the-guestbook-application)
+  - [4.3. Enable auto-sync and self-heal for the guestbook Application.](#43-enable-auto-sync-and-self-heal-for-the-guestbook-application)
   - [4.4. Demonstrate Application auto-sync via Git.](#44-demonstrate-application-auto-sync-via-git)
-  - [4.5. Demonstrate Application auto-heal functionality.](#45-demonstrate-application-auto-heal-functionality)
+  - [4.5. Demonstrate Application self-heal functionality.](#45-demonstrate-application-self-heal-functionality)
 - [5. Managing Argo CD Applications declaritively.](#5-managing-argo-cd-applications-declaritively)
   - [5.1. Create an App of Apps.](#51-create-an-app-of-apps)
 
@@ -283,7 +283,7 @@ Well, instead of running `helm upgrade guestbook ./guestbook`, they can trigger 
 
 Due to the change in the repo, Argo CD will detect that the Application is out-of-sync. It will template the Helm chart (i.e., `helm template`) and patch the `guestbook` deployment with the new image tag, triggering a rolling update.
 
-### 4.3. Enable auto-sync and auto-heal for the guestbook Application.
+### 4.3. Enable auto-sync and self-heal for the guestbook Application.
 Any change to the `guestbook` Helm chart source in the repo, or the Application itself, can be applied automatically by enabling the automated sync policy.
 
 1.  In the top menu, click "APP DETAILS".
@@ -321,10 +321,10 @@ With auto-sync enabled on the `guestbook` Application, a change made in Git will
 
 You can view the details of the sync operation by, in the top menu, clicking "SYNC STATUS". Here it will display, what "REVISION" it was for, what triggered it (i.e., "INITIATED BY: automated sync policy"), and the result of the sync (i.e., what resources changed).
 
-### 4.5. Demonstrate Application auto-heal functionality.
-If you remember, you also enabled the auto-heal functionally; this is particularly useful when your cluster is prone to configuration drift. Maybe, changes are made to the Helm charts and applied to the clusters without being pushed to the repo first.
+### 4.5. Demonstrate Application self-heal functionality.
+If you remember, you also enabled the self-heal functionally; this is particularly useful when your cluster is prone to configuration drift. Maybe, changes are made to the Helm charts and applied to the clusters without being pushed to the repo first.
 
-Auto-heal will ensure that Argo CD will reconcile any changes made to the Application resources that deviate from the source (i.e., the repo).
+self-heal will ensure that Argo CD will reconcile any changes made to the Application resources that deviate from the source (i.e., the repo).
 
 To demonstrate this:
 1. From the `guestbook` Application page in the Argo CD UI:
