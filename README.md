@@ -27,7 +27,7 @@ You are a Kubernetes cluster administrator who works in an organization where de
 
 The charts are managed in a GitHub repo by developers. They connect directly to the cluster to deploy changes from the `main` branch using `helm`, which requires privileged access.
 
-To prepare for the lab scenario, you can think of what to name your *organization* and *environment*. For example, your *organization* could be your GitHub username and your *environment* “laptop”.
+To prepare for the lab scenario, you can think of what to name your *organization* and *environment*. For example, your *organization* could be your GitHub username and your *environment* “staging”.
 
 - You will use the *organization* name for creating an organization while setting up your account on the Akuity Platform.
 - You will use the *environment* name for the cluster and the App of Apps Application in Argo CD.
@@ -81,7 +81,7 @@ Next, you have a couple of files to update:
     destination:
       namespace: guestbook
 --    name: <environment-name> # Update this value.
-++    name: laptop
+++    name: staging
 ```
 
 ### 3.2. Create a Kubernetes cluster using `kind`.
