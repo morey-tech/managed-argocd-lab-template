@@ -122,7 +122,11 @@ Otherwise, you will create one on your local machine using `kind`.
    Fetching the nodes will demonstrate that `kubectl` can connect to the cluster and query the API server. The node should be in the "Ready" status.
 
 ### 3.3. Launch an Argo CD instance.
-In this scenario, the GitHub repo is hosting Helm charts which describe what resources to deploy into Kubernetes. An Application in Argo CD describes how to deploy those resources. So, similar to Github, you will use the Akuity Platform to host the Argo CD instance and Application manifests. The Akuity Platform removes the need for a Kubernetes cluster to host Argo CD so it can to be able to manage other clusters.
+In this scenario, we are demonstrating deploying applications to a cluster external to Argo CD. For convenience during the lab, we will use the Akuity Platform to get a fully-featured instance of Argo CD without having to configure a separate cluster and set up UI access.
+
+The lab can be completed using the open-source installation of Argo CD by following [the Getting Started guide](https://argo-cd.readthedocs.io/en/stable/getting_started/) and [setting up an ingress](https://argo-cd.readthedocs.io/en/stable/operator-manual/ingress/). Then substitute section 3.4 by [connecting an external cluster](https://argo-cd.readthedocs.io/en/stable/getting_started/#5-register-a-cluster-to-deploy-apps-to-optiona) to it.
+
+Similar to how the GitHub repo is hosting the Helm charts, which describe **what** resources to deploy into Kubernetes, the Akuity Platform will host the Application manifests, which represent **how** to deploy the resources into the cluster. Along with Argo CD, which will implement the changes on the cluster.
 
 1. Create an account on the [Akuity Platform](https://akuity.io/signup).
 
