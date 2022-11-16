@@ -182,7 +182,7 @@ Now that you have an Argo CD instance running and accessible, you need to connec
    argocd-repo-server-<replicaset-id>-<pod-id>                 1/1     Running   0          64s
    argocd-repo-server-<replicaset-id>-<pod-id>                 1/1     Running   0          64s
    ```
-   - Re-run the `get pods` command to check for updates on the pod statuses.
+   - Re-run the `kubectl get pods -n akuity` command to check for updates on the pod statuses.
 9.  Back on the Clusters dashboard, confirm that the cluster shows a green heart before the name, indicating a healthy status.
 
 ## 4. Using Argo CD to Deploy Helm Charts.
