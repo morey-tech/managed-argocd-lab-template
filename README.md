@@ -271,11 +271,11 @@ Well, instead of running `helm upgrade guestbook ./guestbook`, they can trigger 
 
 3. Update the `image.tag` to the `0.2` list.
 
-4. In the top right, click "Commit changes...".
+4. Click "Commit changes...".
 
 5. Add a commit message. For example `chore(guestbook): bump tag to 0.2`.
 
-6. In the bottom left, click "Commit changes".
+6. Click "Commit changes".
 
 7. Switch to the Argo CD UI and go to the `argocd/guestbook` Application.
 
