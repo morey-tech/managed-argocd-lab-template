@@ -119,7 +119,9 @@ In this scenario, the GitHub repo is hosting Helm charts which describe what res
 
 1. Create an account on the [Akuity Platform](https://akuity.io/signup).
 2. To log in with GitHub SSO, click "Continue with GitHub".
-   1. You can also use Google SSO or an email and password combo. For the sake of the lab, I'm assuming you will be using GitHub.
+   
+   You can also use Google SSO or an email and password combo. For the sake of the lab, I'm assuming you will be using GitHub.
+
 3. Click "Authorize akuityio".
 4. Create an organization by clicking "create or join" in the information bulletin.
 5. In the top right, click "New organization".
@@ -145,10 +147,12 @@ In this scenario, the GitHub repo is hosting Helm charts which describe what res
 16. Enable the "Admin Account" by clicking the toggle and clicking "Confirm" on the prompt.
 17. Then, for the `admin` user, click "Set Password".
 18. To get the password, click "Copy".
-   - If the copy option does not appear, click "Regenerate Password" and then "Copy". Note this will invalidate any other sessions for the `admin` user.
-15. In the bottom right of the Set password prompt, hit "Close".
-16. In the top, next to the Argo CD instance name and status, click the instance URL (e.g., `<uuid>.cd.akuity.cloud`) to open the Argo CD login page in a new tab.
-17.  Enter the username `admin` and the password copied previously.
+    
+    If the copy option does not appear, click "Regenerate Password" and then "Copy". Note this will invalidate any other sessions for the `admin` user.
+
+19. In the bottom right of the Set password prompt, hit "Close".
+20. In the top, next to the Argo CD instance name and status, click the instance URL (e.g., `<uuid>.cd.akuity.cloud`) to open the Argo CD login page in a new tab.
+21.  Enter the username `admin` and the password copied previously.
 
 You now have a fully-managed Argo CD instance.
 
@@ -182,7 +186,9 @@ Now that you have an Argo CD instance running and accessible, you need to connec
    argocd-repo-server-<replicaset-id>-<pod-id>                 1/1     Running   0          64s
    argocd-repo-server-<replicaset-id>-<pod-id>                 1/1     Running   0          64s
    ```
-   - Re-run the `kubectl get pods -n akuity` command to check for updates on the pod statuses.
+   
+   Re-run the `kubectl get pods -n akuity` command to check for updates on the pod statuses.
+
 9.  Back on the Clusters dashboard, confirm that the cluster shows a green heart before the name, indicating a healthy status.
 
 ## 4. Using Argo CD to Deploy Helm Charts.
@@ -192,8 +198,8 @@ An Application declaratively tells Argo CD what Kubernetes resources to deploy. 
 1. Navigate to the Argo CD UI, and click "NEW APP".
 2. In the top right, click "EDIT AS YAML".
 3. Paste the contents of `apps/guestbook.yaml` from your repo.
-
-    This manifest describes an Application. 
+   
+   This manifest describes an Application. 
     - The name of the Application is `guestbook`.
     - The source is your repo with the Helm charts.
     - The destination is the cluster connected by the agent.
