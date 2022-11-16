@@ -1,0 +1,13 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: <environment-name> # Update to your cluster name.
+  namespace: argocd
+spec:
+  destination:
+    name: in-cluster
+  project: default
+  source:
+    path: apps
+    repoURL: https://github.com/<github-username>/managed-argocd-lab # Update to your repo URL.
+    targetRevision: HEAD
