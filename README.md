@@ -192,25 +192,6 @@ An Application declaratively tells Argo CD what Kubernetes resources to deploy. 
 1. Navigate to the Argo CD UI, and click "NEW APP".
 2. In the top right, click "EDIT AS YAML".
 3. Paste the contents of `apps/guestbook.yaml` from your repo.
-    ```yaml
-    apiVersion: argoproj.io/v1alpha1
-    kind: Application
-    metadata:
-      name: guestbook
-      namespace: argocd
-    spec:
-      project: default
-      source:
-        repoURL: 'https://github.com/<github-username>/managed-argocd-lab' # Update to match your fork.
-        path: guestbook
-        targetRevision: HEAD
-      destination:
-        namespace: guestbook
-        name: <environment-name> # Update this value.
-      syncPolicy:
-        syncOptions:
-          - CreateNamespace=true
-    ```
 
     This manifest describes an Application. 
     - The name of the Application is `guestbook`.
@@ -218,21 +199,19 @@ An Application declaratively tells Argo CD what Kubernetes resources to deploy. 
     - The destination is the cluster connected by the agent.
     - The sync policy will automatically create the namespace.
 
-4. Replace `<github-username>` in `spec.source.repoURL` to match your GitHub username.
-5. Update `<environment-name>` in `spec.destination.name` to match your environment name (i.e., cluster name).
-6. Click "SAVE".
+4. Click "SAVE".
    
    At this point, the UI has translated the Application manifest into the corresponding fields in the wizard.
 
-7. In the top left, click "CREATE".
+5. In the top left, click "CREATE".
 
    The new app pane will close and show the card for the Application you created. The status on the card will show "Missing" and "OutOfSync".
 
-8. Click on the Application card titled `argocd/guestbook`.
+6. Click on the Application card titled `argocd/guestbook`.
    
    In this state, the Application resource tree shows the manifests generated from the source repo URL and path defined. You can click "APP DIFF" to see what manifests the Application rendered. Since auto-sync is disabled, the resources do not exist in the destination yet.
 
-9.  In the top bar, click "SYNC" then "SYNCHRONIZE" to instruct Argo CD to create the resources defined by the Application.
+7.  In the top bar, click "SYNC" then "SYNCHRONIZE" to instruct Argo CD to create the resources defined by the Application.
 
 The tree will expand as the Deployment creates a ReplicaSet that creates a pod, and the Service creates an Endpoint and EndpointSlice. The Application will remain in the "Progressing" state until the pod for the deployment is running.
 
