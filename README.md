@@ -7,7 +7,7 @@ Ultimately, you will have a Kubernetes cluster, with Applications deployed using
 Use these links to learn what is: [Kubernetes](https://youtu.be/4ht22ReBjno?t=164), [GitOps](https://opengitops.dev/), [Argo CD](https://argo-cd.readthedocs.io/en/stable/#what-is-argo-cd), [Akuity](https://akuity.io/).
 
 - [1. Lab Scenario](#1-lab-scenario)
-- [2. Pre-requisetes](#2-pre-requisetes)
+- [2. Prerequisites](#2-prerequisites)
 - [3. Setting up your environment.](#3-setting-up-your-environment)
   - [3.1. Create repository from template.](#31-create-repository-from-template)
   - [3.2. Create a Kubernetes cluster using `kind`.](#32-create-a-kubernetes-cluster-using-kind)
@@ -34,7 +34,7 @@ To prepare for the lab scenario, you can think of what to name your *organizatio
 
 Text in the format `<...>` indicates that you need to replace it with the value relevant to your scenario. Using my scenario, for example, in the text `https://github.com/<github-username>/managed-argocd-lab`, I would replace `<github-username>` with `morey-tech`.
 
-## 2. Pre-requisetes
+## 2. Prerequisites
 The lab requires that you have the following:
 - a [GitHub](https://github.com/) Account - You will use this to create the repo for the environment configuration and for creating an account on the [Akuity Platform](https://akuity.io/akuity-platform/).
 - the Kubernetes command-line tool, [kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl) - Will be used for interacting with the cluster directly.
