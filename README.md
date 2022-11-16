@@ -32,7 +32,7 @@ To prepare for the lab scenario, you can think of what to name your *organizatio
 - You will use the *organization* name for creating an organization while setting up your account on the Akuity Platform.
 - You will use the *environment* name for the cluster and the App of Apps Application in Argo CD.
 
-Text in the format `<...>` indicates that you need to replace it with the value relevant to your scenario. Using my scenario, for example, in the text `https://github.com/<github-username>/managed-argocd-lab`, I would replace `<github-username>` with `morey-tech`.
+Text in the format `<...>` (between less-than and greater-than symbols) indicates that you need to replace it with the value relevant to your scenario. Using my scenario, for example, in the text `https://github.com/<github-username>/managed-argocd-lab`, I would replace `<github-username>` with `morey-tech`.
 
 ## 2. Prerequisites
 The lab requires that you have the following:
@@ -62,8 +62,8 @@ Start by creating a repository on your Github account from the template.
 4. Then click "Create repository from template".
 
 Next, you have a couple of files to update:
-1. For the `guestbook.yaml` and `portal.yaml` files in `apps/`:
 
+1. For the `guestbook.yaml` and `portal.yaml` files in `apps/`:
 
 2. Fix the `spec.source.repoURL` by replacing `<github-username>` with your GitHub username (or the org name if using one).
 
