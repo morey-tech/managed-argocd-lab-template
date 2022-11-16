@@ -54,14 +54,21 @@ You will use a template repository containing the application Helm charts for th
 
 Start by creating a repository on your Github account from the template. 
 1. Click [this link](https://github.com/morey-tech/managed-argocd-lab/generate) or click "Use this template" from the repo main page.
+
 2. Ensure the desired "Owner" is selected (e.g., your account and not an org).
+
 3. Enter a `managed-argocd-lab` for the "Repository name". 
+
 4. Then click "Create repository from template".
 
 Next, you have a couple of files to update:
 1. For the `guestbook.yaml` and `portal.yaml` files in `apps/`:
+
+
 2. Fix the `spec.source.repoURL` by replacing `<github-username>` with your GitHub username (or the org name if using one).
+
 3. Fix the `spec.destination.name` by replacing `<environment-name>` with your environment name.
+
 4. Commit the changes to the `main` branch.
 
 ```diff
@@ -118,19 +125,27 @@ Otherwise, you will create one on your local machine using `kind`.
 In this scenario, the GitHub repo is hosting Helm charts which describe what resources to deploy into Kubernetes. An Application in Argo CD describes how to deploy those resources. So, similar to Github, you will use the Akuity Platform to host the Argo CD instance and Application manifests. The Akuity Platform removes the need for a Kubernetes cluster to host Argo CD so it can to be able to manage other clusters.
 
 1. Create an account on the [Akuity Platform](https://akuity.io/signup).
+
 2. To log in with GitHub SSO, click "Continue with GitHub".
    
    You can also use Google SSO or an email and password combo. For the sake of the lab, I'm assuming you will be using GitHub.
 
 3. Click "Authorize akuityio".
+
 4. Create an organization by clicking "create or join" in the information bulletin.
+
 5. In the top right, click "New organization".
+
 6. Enter your "Organization Name" and click "Create".
 
 7. Near the top of the sidebar, click "Argo CD".
+
 8. In the top right, click "Create".
+
 9. Set the "Instance Name" to `cluster-manager`.
+
 10. Under the "Version" section, click the option corresponding to `v2.5`.
+
 11. Click "Create".
 
     At this point, your Argo CD instance will begin initializing. The start-up typically takes under 2 minutes.
@@ -138,20 +153,27 @@ In this scenario, the GitHub repo is hosting Helm charts which describe what res
     To prepare the instance for the rest of the lab, you have a couple of steps left.
 
 12. In the dashboard for the Argo CD instance, click "Settings".
+
 13. In the "General" section, find "Declarative Management" and enable it by clicking the toggle.
     
     Declarative Management enables using the Akuity Platform with the App of Apps pattern or ApplicationSets. We will demonstrate this later in the lab.
 
 14. In the top right, click "Save".
+
 15. On the inner sidebar, under "Security & Access", click "System Accounts".
+
 16. Enable the "Admin Account" by clicking the toggle and clicking "Confirm" on the prompt.
+
 17. Then, for the `admin` user, click "Set Password".
+
 18. To get the password, click "Copy".
     
     If the copy option does not appear, click "Regenerate Password" and then "Copy". Note this will invalidate any other sessions for the `admin` user.
 
 19. In the bottom right of the Set password prompt, hit "Close".
+
 20. In the top, next to the Argo CD instance name and status, click the instance URL (e.g., `<uuid>.cd.akuity.cloud`) to open the Argo CD login page in a new tab.
+
 21.  Enter the username `admin` and the password copied previously.
 
 You now have a fully-managed Argo CD instance.
@@ -160,10 +182,15 @@ You now have a fully-managed Argo CD instance.
 Now that you have an Argo CD instance running and accessible, you need to connect your cluster to it. With the Akuity Platform, you will deploy an agent to the cluster, enabling it to connect to the Akuity Platform.
 
 1. Back on the Akuity Platform, in the top left of the dashboard for the Argo CD instance, click "Clusters".
+
 2. In the top right, click "Connect a cluster".
+
 3. Enter your *environment* name as the "Cluster Name".
+
 4. In the bottom right, Click "Connect Cluster".
+
 5. To get the agent install command, click "Copy to Clipboard". Then, in the bottom right, "Done".
+
 6. Open your terminal and check that your target is the correct cluster by running `kubectl config current-context`. 
     
     If you are following along using `kind`, you should see the following:
@@ -173,7 +200,9 @@ Now that you have an Argo CD instance running and accessible, you need to connec
     ```
 
 7. Paste and run the command against the cluster.
-   1. This will create the `akuity` namespace and deploy the resources for the Akuity Agent.
+  
+  This will create the `akuity` namespace and deploy the resources for the Akuity Agent.
+
 8. Check the pods in the `akuity` namespace. Wait for the `Running` status on all pods (approx. 1 minute).
    ```
    % kubectl get pods -n akuity
@@ -196,7 +225,9 @@ Now that you have an Argo CD instance running and accessible, you need to connec
 An Application declaratively tells Argo CD what Kubernetes resources to deploy. In this section, you will create one to deploy the `guestbook` Helm Chart from your GitOps repo to your cluster.
 
 1. Navigate to the Argo CD UI, and click "NEW APP".
+
 2. In the top right, click "EDIT AS YAML".
+
 3. Paste the contents of `apps/guestbook.yaml` from your repo.
    
    This manifest describes an Application. 
@@ -233,11 +264,17 @@ Well, instead of running `helm upgrade guestbook ./guestbook`, they can trigger 
    `https://github.com/morey-tech/managed-argocd-lab/blob/2022-11-webinar/guestbook/values.yaml`
 
 2. In the top right of the file, click the pencil icon to edit.
+
 3. Update the `image.tag` to the `0.2` list.
+
 4. In the top right, click "Commit changes...".
+
 5. Add a commit message. For example `chore(guestbook): bump tag to 0.2`.
+
 6. In the bottom left, click "Commit changes".
+
 7. Switch to the Argo CD UI and go to the `argocd/guestbook` Application.
+
 8. In the top right, click the "REFRESH" button to trigger Argo CD to check for any changes to the Application source and resources.
 
 Due to the change in the repo, Argo CD will detect that the Application is out-of-sync. It will template the Helm chart (i.e., `helm template`) and patch the `guestbook` deployment with the new image tag, triggering a rolling update.
@@ -246,8 +283,11 @@ Due to the change in the repo, Argo CD will detect that the Application is out-o
 Any change to the `guestbook` Helm chart source in the repo, or the Application itself, can be applied automatically by enabling the automated sync policy.
 
 1.  In the top menu, click "APP DETAILS".
+
 2.  Under the "SYNC POLICY" section, click "ENABLE AUTO-SYNC" and on the prompt, click "OK".
+
 3.  Below that, on the right of "SELF HEAL", click "ENABLE".
+
 4.  In the top right of the App Details pane, click the X to close it.
 
 If the Application were out-of-sync, this would immediately trigger a sync. In this case, your Application is already in sync, so Argo CD made no changes.
@@ -262,11 +302,17 @@ With auto-sync enabled on the `guestbook` Application, a change made in Git will
    `https://github.com/morey-tech/managed-argocd-lab/blob/2022-11-webinar/guestbook/values.yaml`
 
 2. In the top right of the file, click the pencil icon to edit.
+
 3. Update the `replicaCount` to the `2` list.
+
 4. In the top right, click "Commit changes...".
+
 5. Add a commit message. For example `chore(guestbook): scale to 2 replicas`.
+
 6. In the bottom left, click "Commit changes".
+
 7. Switch to the Argo CD UI and go to the `argocd/guestbook` Application.
+
 8.  In the top right, click the "REFRESH" button to trigger Argo CD to check for any changes to the Application source and resources.
 
 You can view the details of the sync operation by, in the top menu, clicking "SYNC STATUS". Here it will display, what "REVISION" it was for, what triggered it (i.e., "INITIATED BY: automated sync policy"), and the result of the sync (i.e., what resources changed).
@@ -278,8 +324,11 @@ Auto-heal will ensure that Argo CD will reconcile any changes made to the Applic
 
 To demonstrate this:
 1. From the `guestbook` Application page in the Argo CD UI:
+
 2. Locate the `guestbook` deploy (i.e., Deployment) resource and click the three vertical dots on the right side of the card.
+
 3. Then click "Delete".
+
 4. Enter the deployment name `guestbook` and click "OK".
 
 Almost as quickly as you delete it, Argo CD will detect that the deploy resource is missing from the Application. It will briefly display the yellow circle with a white arrow to indicate that the resource is out-of-sync. Then automatically recreate it, bringing the Application back to a healthy status.
@@ -289,7 +338,9 @@ Almost as quickly as you delete it, Argo CD will detect that the deploy resource
 Earlier in the lab, you created the `guestbook` Application using the UI (i.e., imperatively). What if you want to manage the Application manifests declaratively too? This is where [the App of Apps pattern](https://argo-cd.readthedocs.io/en/stable/operator-manual/cluster-bootstrapping/#app-of-apps-pattern) comes in. You will create a new Application that will manage the Application manifests for the apps.
 
 1. Navigate to the Applications dashboard in the Argo CD UI, and click "NEW APP".
+
 2. In the top right, click "EDIT AS YAML".
+
 3. Paste the contents of `app-of-apps.yaml` (in the repo's root).
     ```yaml
     apiVersion: argoproj.io/v1alpha1
@@ -310,9 +361,13 @@ Earlier in the lab, you created the `guestbook` Application using the UI (i.e., 
     This Application will watch the `apps/` directory in your repo which contains Application manifests for the `guestbook` and `portal` Helm charts.
 
 4. Update `<environment-name>` in `metadata.name` to match your environment name (i.e., cluster name).
+
 5. Update `<github-username>` in `spec.source.repoURL` to match your GitHub username.
+
 6. Click "SAVE".
+
 7. Then, in the top left, click "CREATE".
+
 8. Click on the Application card titled `argocd/<environment-name>`.
 
     At this point, the Application will be out-of-sync. The diff will show the addition of the `argocd.argoproj.io/tracking-id` label to the existing `guestbook` Application, which indicates that the "App of Apps now manages it".
