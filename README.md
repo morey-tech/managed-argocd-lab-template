@@ -328,3 +328,5 @@ Earlier in the lab, you created the `guestbook` Application using the UI (i.e., 
     Along with a new Application for the `portal` Helm chart.
 
 9.  To apply the changes, in the top bar, click "SYNC" then "SYNCHRONIZE".
+
+From this Application, you can see all of the other Applications managed by it in the resource tree. You can click through to one of the managed Applications by clicking on the box with the arrow in the top right on the resource.
