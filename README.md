@@ -167,7 +167,7 @@ Now that you have an Argo CD instance running and accessible, you need to connec
     % kubectl config current-context
     kind-<env-name>
     ```
-    - This output assumes you are using `kind`.
+
 7. Paste and run the command against the cluster.
    1. This will create the `akuity` namespace and deploy the resources for the Akuity Agent.
 8. Check the pods in the `akuity` namespace. Wait for the `Running` status on all pods (approx. 1 minute).
