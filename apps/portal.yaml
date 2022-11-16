@@ -7,10 +7,10 @@ spec:
   project: default
   source:
     repoURL: 'https://github.com/<github-username>/managed-argocd-lab' # Update to match your fork.
-    path: guestbook
+    path: portal
     targetRevision: HEAD
   destination:
-    namespace: guestbook
+    namespace: portal
     name: <environment-name> # Update this value.
   syncPolicy:
     syncOptions:
