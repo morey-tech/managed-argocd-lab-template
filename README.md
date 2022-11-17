@@ -25,9 +25,6 @@ Use these links to learn what is: [Kubernetes](https://youtu.be/4ht22ReBjno?t=16
   - [5.1. Create an App of Apps.](#51-create-an-app-of-apps)
 
 ## 1. Lab Scenario
-You are a Kubernetes cluster administrator. In your organization, developers deploy containerized applications, using Helm charts. The charts are managed in a GitHub repo by the developers. The developers manually deploy the charts, by running `helm` commands directly against the cluster.
-
-This lab will walk you through implementing Argo CD to manage the deployment of the Helm charts in a declaritive fashion.
 
 To prepare for the lab scenario, you can think of what to name your *organization* and *environment*. For example, your *organization* could be your GitHub username and your *environment* “staging”.
 
