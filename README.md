@@ -23,6 +23,7 @@ Use these links to learn what is: [Kubernetes](https://youtu.be/4ht22ReBjno?t=16
   - [4.5. Demonstrate Application self-heal functionality.](#45-demonstrate-application-self-heal-functionality)
 - [5. Managing Argo CD Applications declaritively.](#5-managing-argo-cd-applications-declaritively)
   - [5.1. Create an App of Apps.](#51-create-an-app-of-apps)
+- [6. Review.](#6-review)
 
 ## 1. Lab Scenario
 
@@ -409,3 +410,8 @@ Earlier in the lab, you created the `guestbook` Application imperatively, using 
 9.  To apply the changes, in the top bar, click "SYNC" then "SYNCHRONIZE".
 
 From this Application, you can see all of the other Applications managed by it in the resource tree. You can click through to one of the managed Applications by clicking on the box with the arrow in the top right on the resource.
+
+## 6. Review.
+You have reached the end of the lab. At this point, you have an Argo CD instance that is deploying Helm charts from your repo into your cluster.
+
+The developers no longer manually deploy Helm chart changes. The process defining how the Helm charts are deployed, is defined declaritively. There's no longer a need for direct access to the cluster, removing the primary source of configuration drift.
