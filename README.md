@@ -1,6 +1,8 @@
 # Creating a fully-managed Kubernetes GitOps platform with Argo CD
 
-In this hour-long hands-on lab, you will set up a repo to contain the environment configuration, create a Kubernetes cluster, and provision an Argo CD instance. Then use Argo CD to deploy Applications from the repo to the cluster. Finally, you will work with the auto-sync and self-heal functionality of the Applications.
+In this hour-long hands-on lab, you will enter the scenario as a Kubernetes Cluster Administrator. In the organization you work at, the developers deploy containerized applications using Helm charts. The charts are version controlled in a GitHub repo and the developers deploy them manually, by running `helm` commands against the cluster.
+
+This lab will walk you through implementing Argo CD to manage the deployment of the Helm charts in a declaritive fashion.
 
 Ultimately, you will have a Kubernetes cluster, with Applications deployed using an Argo CD control plane.
 
