@@ -11,7 +11,7 @@ Use these links to learn what is: [Kubernetes](https://youtu.be/4ht22ReBjno?t=16
 - [1. Lab Scenario](#1-lab-scenario)
 - [2. Prerequisites](#2-prerequisites)
 - [3. Setting up your environment.](#3-setting-up-your-environment)
-  - [3.1. Create repository from template.](#31-create-repository-from-template)
+  - [3.1. Create the repository from a template.](#31-create-the-repository-from-a-template)
   - [3.2. Create a Kubernetes cluster using `kind`.](#32-create-a-kubernetes-cluster-using-kind)
   - [3.3. Launch an Argo CD instance.](#33-launch-an-argo-cd-instance)
   - [3.4. Deploy an agent to the cluster.](#34-deploy-an-agent-to-the-cluster)
@@ -56,7 +56,7 @@ The lab was built and tested using the following tool and component versions:
 - kind: v0.16.0
 
 ## 3. Setting up your environment.
-### 3.1. Create repository from template.
+### 3.1. Create the repository from a template.
 In this scenario, the developers manage the application Helm charts in version control. To represent this in the lab, you will create a repository from a template containing the application Helm charts.
 
 1. Click [this link](https://github.com/morey-tech/managed-argocd-lab/generate) or click "Use this template" from the repo main page.
