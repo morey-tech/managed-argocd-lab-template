@@ -363,7 +363,7 @@ Earlier in the lab, you created the `guestbook` Application imperatively, using 
     apiVersion: argoproj.io/v1alpha1
     kind: Application
     metadata:
-      name: <environment-name> # Update to your cluster name.
+      name: applications
       namespace: argocd
     spec:
       destination:
@@ -377,15 +377,13 @@ Earlier in the lab, you created the `guestbook` Application imperatively, using 
 
     This Application will watch the `apps/` directory in your repo which contains Application manifests for the `guestbook` and `portal` Helm charts.
 
-4. Update `<environment-name>` in `metadata.name` to match your environment name (i.e., cluster name).
+4. Update `<github-username>` in `spec.source.repoURL` to match your GitHub username.
 
-5. Update `<github-username>` in `spec.source.repoURL` to match your GitHub username.
+5. Click "SAVE".
 
-6. Click "SAVE".
+6. Then, in the top left, click "CREATE".
 
-7. Then, in the top left, click "CREATE".
-
-8. Click on the Application card titled `argocd/<environment-name>`.
+7. Click on the Application card titled `argocd/applications`.
 
     At this point, the Application will be out-of-sync. The diff will show the addition of the `argocd.argoproj.io/tracking-id` label to the existing `guestbook` Application, which indicates that the "App of Apps now manages it".
 
@@ -393,19 +391,19 @@ Earlier in the lab, you created the `guestbook` Application imperatively, using 
       kind: Application
       metadata:
     ++  annotations:
-    ++    argocd.argoproj.io/tracking-id: '<environment-name>:argoproj.io/Application:argocd/guestbook'
+    ++    argocd.argoproj.io/tracking-id: 'applications:argoproj.io/Application:argocd/guestbook'
         generation: 44
         labels:
           ...
           path: guestbook
-          repoURL: 'https://github.com/<environment-name>/managed-argocd-lab'
+          repoURL: 'https://github.com/<github-username>/managed-argocd-lab'
         syncPolicy:
           automated: {}
     ```
 
     Along with a new Application for the `portal` Helm chart.
 
-9. To apply the changes, in the top bar, click "SYNC" then "SYNCHRONIZE".
+8. To apply the changes, in the top bar, click "SYNC" then "SYNCHRONIZE".
 
 From this Application, you can see all of the other Applications managed by it in the resource tree. Each child Application resource has a link to its view on the resource card.
 
