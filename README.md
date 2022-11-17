@@ -1,6 +1,6 @@
 # Creating a fully-managed Kubernetes GitOps platform with Argo CD
 
-In this hour-long hands-on lab, you will enter the scenario as a Kubernetes Cluster Administrator. In the organization you work at, the developers deploy containerized applications using Helm charts. The charts are version controlled in a GitHub repo and the developers deploy them manually, by running `helm` commands against the cluster.
+In this hour-long hands-on lab, you will enter a scenario as a Kubernetes Cluster Administrator. In the organization you work at, the developers deploy containerized applications using Helm charts. The charts are version controlled in a GitHub repo and the developers deploy them manually, by running `helm` commands against the cluster.
 
 This lab will walk you through implementing Argo CD to manage the deployment of the Helm charts in a declaritive fashion.
 
@@ -161,33 +161,33 @@ Similar to how the GitHub repo is hosting the Helm charts, which describe **what
 
 While the instance is initializing, you can prepare it for the rest of the lab.
 
-1.  In the dashboard for the Argo CD instance, click "Settings".
+1. In the dashboard for the Argo CD instance, click "Settings".
 
-2.  In the "General" section, find "Declarative Management" and enable it by clicking the toggle.
+2. In the "General" section, find "Declarative Management" and enable it by clicking the toggle.
     
     Declarative Management enables using the Akuity Platform with the App of Apps pattern (or ApplicationSets) by exposing the `in-cluster` destination. This means an Application will be able to create other Applicaions in the cluster hosting Argo CD. You will work with this later in the lab. In the open-source installation of Argo CD, this is exposed by default because you host it on your own cluster.
 
-3.  In the top right, click "Save".
+3. In the top right, click "Save".
 
-4.  On the inner sidebar, under "Security & Access", click "System Accounts".
+4. On the inner sidebar, under "Security & Access", click "System Accounts".
 
-5.  Enable the "Admin Account" by clicking the toggle and clicking "Confirm" on the prompt.
+5. Enable the "Admin Account" by clicking the toggle and clicking "Confirm" on the prompt.
 
     Enabling the `admin` accoun permits logging in through the UI.
 
-6.  Then, for the `admin` user, click "Set Password".
+6. Then, for the `admin` user, click "Set Password".
 
     On the open-source installation of Argo CD, you would retrieve this from [the `argocd-initial-admin-secret` Secret](https://argo-cd.readthedocs.io/en/stable/getting_started/#4-login-using-the-cli).
 
-7.  To get the password, click "Copy".
+7. To get the password, click "Copy".
     
     If the copy option does not appear, click "Regenerate Password" and then "Copy". Note this will invalidate any other sessions for the `admin` user.
 
-8.  In the bottom right of the Set password prompt, hit "Close".
+8. In the bottom right of the Set password prompt, hit "Close".
 
-9.  In the top, next to the Argo CD instance name and status, click the instance URL (e.g., `<uuid>.cd.akuity.cloud`) to open the Argo CD login page in a new tab.
+9. In the top, next to the Argo CD instance name and status, click the instance URL (e.g., `<uuid>.cd.akuity.cloud`) to open the Argo CD login page in a new tab.
 
-10.  Enter the username `admin` and the password copied previously.
+10. Enter the username `admin` and the password copied previously.
 
 You now have a fully-managed Argo CD instance.
 
@@ -231,7 +231,7 @@ In order for Argo CD to deploy the application resources, you must connect the c
    
    Re-run the `kubectl get pods -n akuity` command to check for updates on the pod statuses.
 
-9.  Back on the Clusters dashboard, confirm that the cluster shows a green heart before the name, indicating a healthy status.
+9. Back on the Clusters dashboard, confirm that the cluster shows a green heart before the name, indicating a healthy status.
 
 ## 4. Using Argo CD to Deploy Helm Charts.
 ### 4.1. Create an Application in Argo CD.
@@ -263,7 +263,7 @@ Start by creating an Application to deploy the `guestbook` Helm Chart from the r
    
    In this state, the Application resource tree shows the manifests generated from the source repo URL and path defined. You can click "APP DIFF" to see what manifests the Application rendered. Since auto-sync is disabled, the resources do not exist in the destination yet.
 
-7.  In the top bar, click "SYNC" then "SYNCHRONIZE" to instruct Argo CD to create the resources defined by the Application.
+7. In the top bar, click "SYNC" then "SYNCHRONIZE" to instruct Argo CD to create the resources defined by the Application.
 
 The resource tree will expand as the Deployment creates a ReplicaSet that creates a pod, and the Service creates an Endpoint and EndpointSlice. The Application will remain in the "Progressing" state until the pod for the deployment is running.
 
@@ -294,20 +294,20 @@ Well, instead of running `helm upgrade guestbook ./guestbook`, they will trigger
 
    The default sync interval is 3 minutes. Any changes made in Git may not apply for up to 3 minutes.
 
-9.  In the top bar, click "SYNC" then "SYNCHRONIZE" to instruct Argo CD to deploy the changes.
+9. In the top bar, click "SYNC" then "SYNCHRONIZE" to instruct Argo CD to deploy the changes.
 
 Due to the change in the repo, Argo CD will detect that the Application is out-of-sync. It will template the Helm chart (i.e., `helm template`) and patch the `guestbook` deployment with the new image tag, triggering a rolling update.
 
 ### 4.3. Enable auto-sync and self-heal for the guestbook Application.
 Now that you are using an Application to describe how to deploy the Helm chart into the cluster, you can configure the sync policy to automatically apply changes. Removing the need for developers to manually trigger a deployment for changes that have already made it through the approval processes.
 
-1.  In the top menu, click "APP DETAILS".
+1. In the top menu, click "APP DETAILS".
 
-2.  Under the "SYNC POLICY" section, click "ENABLE AUTO-SYNC" and on the prompt, click "OK".
+2. Under the "SYNC POLICY" section, click "ENABLE AUTO-SYNC" and on the prompt, click "OK".
 
-3.  Below that, on the right of "SELF HEAL", click "ENABLE".
+3. Below that, on the right of "SELF HEAL", click "ENABLE".
 
-4.  In the top right of the App Details pane, click the X to close it.
+4. In the top right of the App Details pane, click the X to close it.
 
 If the Application were out-of-sync, this would immediately trigger a sync. In this case, your Application is already in sync, so Argo CD made no changes.
 
@@ -407,7 +407,7 @@ Earlier in the lab, you created the `guestbook` Application imperatively, using 
 
     Along with a new Application for the `portal` Helm chart.
 
-9.  To apply the changes, in the top bar, click "SYNC" then "SYNCHRONIZE".
+9. To apply the changes, in the top bar, click "SYNC" then "SYNCHRONIZE".
 
 From this Application, you can see all of the other Applications managed by it in the resource tree. You can click through to one of the managed Applications by clicking on the box with the arrow in the top right on the resource.
 
