@@ -8,6 +8,8 @@ Ultimately, you will have a Kubernetes cluster, with Applications deployed using
 
 Use these links to learn what is: [Kubernetes](https://youtu.be/4ht22ReBjno?t=164), [GitOps](https://opengitops.dev/), [Argo CD](https://argo-cd.readthedocs.io/en/stable/#what-is-argo-cd), [Akuity](https://akuity.io/).
 
+[If you prefer to learn by following along, check out the webinar where I walk through these steps.](https://www.youtube.com/watch?v=73nufrbL3Rw)
+
 - [1. Lab Scenario](#1-lab-scenario)
 - [2. Prerequisites](#2-prerequisites)
 - [3. Setting up your environment.](#3-setting-up-your-environment)
